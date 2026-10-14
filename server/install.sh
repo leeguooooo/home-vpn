@@ -143,9 +143,12 @@ PY
     local old=$(/usr/bin/plutil -extract ProgramArguments.0 raw $dst 2>/dev/null || true)
     [[ $old == $HOME/bin/* ]] && OLD_BIN+=($old)
     launchctl bootout gui/$(id -u)/$label 2>/dev/null || true
+    # bootout returns before the job is gone; bootstrapping too early fails with "5: Input/output error"
+    local i; for i in {1..20}; do launchctl print gui/$(id -u)/$label >/dev/null 2>&1 || break; sleep 0.5; done
   fi
   mv -f $want $dst; chmod 644 $dst
-  launchctl bootstrap gui/$(id -u) $dst
+  local ok=0; for i in {1..5}; do launchctl bootstrap gui/$(id -u) $dst 2>/dev/null && { ok=1; break; }; sleep 1; done
+  (( ok )) || { echo "❌ $label 没装上：launchctl bootstrap gui/$(id -u) $dst"; exit 1; }
   echo "   $label 已安装"
 }
 
