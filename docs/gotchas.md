@@ -16,6 +16,7 @@
 - **IPv4 入口晚高峰可能被限速到 0**（2026-09-21），同时 v6 正常；也有反过来的时候。所以客户端两条 HY2 都要有，由自动组挑。
 - **Brutal 只在下行一定有用，上行要按网络实测**：客户端 `down_mbps` 让服务端往你这发时不因丢包降速（2026-09-18 单连接 5~18 → 55~89 Mbps；2026-09-29 家里宽带 v4 下载 60 → 82）。`up_mbps` 是你往服务器发的速度，声明高了会猛丢包、低了会被压住：2026-09-29 国内家里宽带（中国移动）往东京上传，不设 28~105 波动，Brutal 40 → ~30，60 → 37~45（最稳），80 → 忽好忽坏。所以站点默认不设上行（笔记本会换网络，普通拥塞控制自己适应），固定在家的台式机在 `site/clients/<机器>.json` 用 `hy2_up_mbps` 钉 60。测法：临时起一个不接管系统的 sing-box（mixed 入站 + 出站 `bind_interface: en0` 直连服务器），换不同 `up_mbps` 交替上传 `speed.cloudflare.com/__up`，多轮取中位数。
 - **国内家里宽带的 IPv6 往境外上传可能被卡在约 5 Mbps**（2026-09-29，中国移动，不管设不设 Brutal 都是 4.9~5.0），下载正常（~80）。自动组选到 v6 时上传就只有 5 Mbps。
+- **macOS 替换开机任务时 bootstrap 报 `5: Input/output error`**：`launchctl bootout` 返回时任务还没走完，紧跟着 bootstrap 就失败，节点会停在没加载的状态。安装脚本先轮询 `launchctl print` 直到任务消失，bootstrap 再重试几次。
 - **日志里大量 `shadowtls … hmac mismatch`**：公网扫描器探测 443，ShadowTLS 把它们转给 apple.com，正常。
 - **解析 secrets.env 不能用 `cut -d= -f2`**：SS2022 密码是 base64，带 `=`，会被截断。按第一个 `=` 切（`lib/jpx.py`）。
 - **Hysteria2 不开 salamander 混淆**：Surge 5.10 不支持，当时为了兼容没开；现在客户端都能配，但开了要所有设备重发配置。
