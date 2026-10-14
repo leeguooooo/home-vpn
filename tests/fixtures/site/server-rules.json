@@ -1,0 +1,9 @@
+[
+  {
+    "_comment": "例：服务器同一局域网里的 NAS，经隧道访问时改走回环（只有 OWNER_USERS 走得到这里）",
+    "ip_cidr": ["192.168.1.20/32"],
+    "port_range": ["5000:5001"],
+    "action": "route-options",
+    "override_address": "127.0.0.1"
+  }
+]

@@ -1,0 +1,19 @@
+# 追加到客户端电脑的 ~/.ssh/config（名字要和 site/site.env 的 SERVER_SSH 一致）。
+# 钥匙先登记到 GitHub（gh ssh-key add ~/.ssh/id_ed25519.pub）：site.env 填了 GITHUB_KEYS_USER 的话，
+# 服务器每 15 分钟同步一次 github.com/<用户名>.keys（server/github-keys-sync.sh）；没填就自己把公钥加进服务器的 authorized_keys。
+
+# 出口服务器（跑 server/ 的那台）
+# 只有 IPv6 入口时：当前网络没有 IPv6 就先把 VPN 连上——TUN 会把这条 ssh 也带过隧道，照样能连。
+Host vpn-server
+  HostName vpn.example.com
+  User you
+  IdentityFile ~/.ssh/id_ed25519
+  ServerAliveInterval 30
+  ServerAliveCountMax 3
+
+# 可选：国内家里的 Windows 电脑（client/windows/install.sh home-desktop），回国出口也装在它上面。
+# DHCP 会换 IP，用机器名。
+Host home-desktop
+  HostName HOME-DESKTOP.local
+  User you
+  IdentityFile ~/.ssh/id_ed25519

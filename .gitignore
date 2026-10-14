@@ -1,0 +1,21 @@
+# 仓库里只有代码。站点参数在 site/（不进 git），密码、证书、用户、日志、生成的配置在服务器的 STATE_DIR（默认 ~/.home-vpn）
+# 和客户端目录，永远不进 git。这里再兜一层底：
+secrets.env*
+*.key
+*.pem
+*.p12
+config.json
+config-*.json
+export*.json
+logs/
+state/
+users.json
+*.srs
+*.png
+__pycache__/
+client/macos/.build/
+.DS_Store
+!tests/fixtures/**
+
+# 每个部署自己的参数（域名、IP、名字）。模板在 site.example/，可以单独放进你的私有仓库
+/site/

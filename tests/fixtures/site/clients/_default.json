@@ -1,0 +1,4 @@
+{
+  "_comment": "每台主人电脑都有：访问服务器局域网里的 NAS 走隧道（必须排在 ip_is_private → direct 前面）",
+  "rules_before_private": [{"ip_cidr": ["192.168.1.20/32"], "outbound": "🏠 Home"}]
+}

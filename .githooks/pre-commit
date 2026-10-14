@@ -1,0 +1,14 @@
+#!/bin/sh
+# 提交前拦密码：gitleaks 扫暂存区；再兜底检查不该出现的文件名和 PEM 私钥。
+# 启用：git config core.hooksPath .githooks（client/macos/install.sh 不管这个，开发这个仓库的电脑自己设一次）
+set -e
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks git --staged --redact --no-banner -v >/dev/null 2>&1 || { gitleaks git --staged --redact --no-banner; echo "pre-commit: gitleaks 发现疑似密钥，提交已拦下"; exit 1; }
+else
+  echo "pre-commit: 没装 gitleaks（brew install gitleaks），只做基础检查" >&2
+fi
+bad=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '(^|/)(secrets\.env|users\.json|config\.json)$|\.key$|\.pem$' | grep -v '^tests/fixtures/' || true)
+[ -z "$bad" ] || { echo "pre-commit: 这些文件不该进仓库：$bad"; exit 1; }
+if git diff --cached -U0 | grep -E '^\+.*(BEGIN [A-Z ]*PRIVATE KEY|_PASSWORD=[A-Za-z0-9+/=]{16,})' | grep -v 'gitleaks:allow' >/dev/null; then
+  echo "pre-commit: 暂存内容里有私钥或密码赋值"; exit 1
+fi

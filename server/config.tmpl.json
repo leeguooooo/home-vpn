@@ -1,0 +1,43 @@
+{
+  "log": { "level": "debug", "timestamp": true, "output": "@STATE@/logs/sing-box.log" },
+  "inbounds": [
+    {
+      "type": "hysteria2", "tag": "hy2-in-v4",
+      "listen": "0.0.0.0", "listen_port": "@HY2_V4_PORT@",
+      "users": "@HY2_USERS@",
+      "tls": { "enabled": true, "alpn": ["h3"],
+               "certificate_path": "@STATE@/certs/server.crt", "key_path": "@STATE@/certs/server.key" }
+    },
+    {
+      "type": "hysteria2", "tag": "hy2-in-v6",
+      "listen": "@V6@", "listen_port": "@HY2_V6_PORT@",
+      "users": "@HY2_USERS@",
+      "tls": { "enabled": true, "alpn": ["h3"],
+               "certificate_path": "@STATE@/certs/server.crt", "key_path": "@STATE@/certs/server.key" }
+    },
+    {
+      "type": "shadowtls", "tag": "stls-in",
+      "listen": "::", "listen_port": "@STLS_PORT@",
+      "version": 3,
+      "users": "@STLS_USERS@",
+      "handshake": { "server": "@STLS_HANDSHAKE@", "server_port": 443 },
+      "strict_mode": true,
+      "detour": "ss-in"
+    },
+    {
+      "type": "shadowsocks", "tag": "ss-in",
+      "listen": "127.0.0.1", "listen_port": 18388,
+      "method": "@SS_METHOD@", "password": "@SS_PASSWORD@"
+    }
+  ],
+  "outbounds": [ { "type": "direct", "tag": "direct" } ],
+  "route": {
+    "rules": [
+      { "action": "sniff" },
+      "@SITE_RULES@",
+      { "port": [25], "action": "reject" },
+      { "protocol": ["bittorrent"], "action": "reject" }
+    ],
+    "final": "direct"
+  }
+}

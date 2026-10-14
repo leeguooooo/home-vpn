@@ -1,0 +1,4 @@
+{
+  "_comment": "某一台电脑的额外设置，文件名就是 client/windows/install.sh 的 --profile（默认和 ssh 主机同名）。都可以不写：tun_mtu（默认 macOS 1500 / Windows 9000）、hy2_up_mbps（上行 Brutal，固定网络实测后再钉）、auto_members（自动组里放哪些节点）、rules_after_private（sing-box 路由规则）、desktop_user（Windows 上 ssh 账号和日常登录账号不同时，托盘装给谁）、cn_exit_listen_port（这台就是回国出口，和 site.env 的 CN_EXIT_PORT 一致）。",
+  "platform": "windows"
+}

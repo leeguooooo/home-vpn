@@ -1,0 +1,20 @@
+# 订阅服务（可选，见 README「订阅」）。部署：npx wrangler deploy -c site/wrangler.toml
+# 先建好 KV 和 R2：npx wrangler kv namespace create SUBS；npx wrangler r2 bucket create home-vpn-dl，把 KV 的 id 填到下面。
+# 管理口令：npx wrangler secret put ADMIN_TOKEN -c site/wrangler.toml；服务器上同样的值写进 $STATE_DIR/sub.env（SUB_ADMIN_TOKEN=…）。
+# 用自定义域名，不用 workers.dev：workers.dev 在国内连不上。
+name = "home-vpn-sub"
+main = "../sub/worker.js"
+compatibility_date = "2026-09-01"
+workers_dev = false
+routes = [{ pattern = "sub.example.com", custom_domain = true }]
+
+# the client install scripts are bundled into the Worker as text
+rules = [{ type = "Text", globs = ["**/*.ps1", "**/*.sh"], fallthrough = true }]
+
+[[r2_buckets]]
+binding = "DL"
+bucket_name = "home-vpn-dl"
+
+[[kv_namespaces]]
+binding = "SUBS"
+id = "<kv namespace id>"

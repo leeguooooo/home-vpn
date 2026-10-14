@@ -1,0 +1,4 @@
+{
+  "_comment": "你自己每台电脑都有的客户端设置，和 site/clients/<机器>.json 合并（列表拼接，这里在前；其他字段机器文件优先）。只用于 SHARED_USER 的设备，给别人的订阅不带它。例：服务器所在局域网里有台 NAS，想在外面经隧道访问：rules_before_private 里加 {\"ip_cidr\": [\"192.168.1.20/32\"], \"outbound\": \"🏠 Home\"}（服务端还要在 OWNER_USERS 里）。",
+  "rules_before_private": []
+}

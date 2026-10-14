@@ -1,0 +1,10 @@
+{
+  "_comment": "国内家里的 Windows 台式机：上行钉实测值，自动组只放 v4，本机是回国出口",
+  "platform": "windows",
+  "desktop_user": "someone",
+  "tun_mtu": 9000,
+  "hy2_up_mbps": 60,
+  "auto_members": ["Home-HY2-v4"],
+  "rules_after_private": [{"process_name": ["RustDesk.exe"], "outbound": "direct"}],
+  "cn_exit_listen_port": 18090
+}
