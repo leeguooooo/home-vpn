@@ -19,6 +19,7 @@ jobs:
           V=$(grep '^SINGBOX_VERSION=' lib/defaults.env | cut -d= -f2 | awk '{print $1}')
           curl -fsSL https://github.com/SagerNet/sing-box/releases/download/v$V/sing-box-$V-linux-amd64.tar.gz | tar -xz
           echo "SINGBOX=$PWD/sing-box-$V-linux-amd64/sing-box" >> $GITHUB_ENV
+          npm install -g --silent esbuild@0.25.10   # bundles sub/worker.js the way wrangler does (SubscriptionTest)
       - name: script syntax
         run: |
           for f in lib/site.sh server/*.sh client/*/*.sh client/ios/qr.sh; do zsh -n "$f" || exit 1; done
