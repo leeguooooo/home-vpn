@@ -2,7 +2,7 @@
 # __BRAND__ · Mac 安装（给用户自己装的版本）。订阅页上「复制安装命令」得到的就是：
 #   curl -fsSL <订阅链接>/mac | bash
 # 订阅服务（sub/worker.js）下发时填好占位符：这个人的订阅链接、sing-box 版本、本目录另两个脚本，
-# 以及站点参数 BRAND、APP_ID（及其小写）、EXIT_NAME、SERVER_V4（见 lib/defaults.env）。
+# 以及站点参数 BRAND、APP_ID（及其小写）、EXIT_NAME、EXIT_COUNTRY、SERVER_V4（见 lib/defaults.env）。
 # 重复运行 = 修复 / 升级。
 #
 # 装好之后：
@@ -106,7 +106,10 @@ ROOT
 ok=0
 for i in $(seq 1 30); do
   sleep 2
-  if [ "$(curl -s -m 5 https://ipinfo.io/ip 2>/dev/null)" = '__SERVER_V4__' ]; then ok=1; break; fi
+  # exit country when the site set one (a home IPv4 can change under DDNS), else the server's IPv4
+  if [ -n '__EXIT_COUNTRY__' ]; then got=$(curl -s -m 5 https://ipinfo.io/country 2>/dev/null); want='__EXIT_COUNTRY__'
+  else got=$(curl -s -m 5 https://ipinfo.io/ip 2>/dev/null); want='__SERVER_V4__'; fi
+  if [ "$got" = "$want" ]; then ok=1; break; fi
 done
 echo
 if [ $ok = 1 ]; then
